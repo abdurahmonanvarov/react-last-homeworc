@@ -1,9 +1,15 @@
+import { onAuthStateChanged } from "firebase/auth";
 import { createContext, useEffect, useReducer } from "react";
+import { auth } from "../firebase/firebaseConfig";
 
 // Reducer function
 const changeState = (state, action) => {
   const { type, payload } = action;
   switch (type) {
+    case "LOGIN":
+      return { ...state, user: payload };
+    case "AUTH_READY":
+      return { ...state, authReady: true };
     case "ADD_PRODUCT":
       return { ...state, selektPtoducts: [...state.selektPtoducts, payload] };
     case "CHANGE_COLOR":
@@ -26,10 +32,12 @@ export const GlobolContext = createContext();
 
 export function GlobolContextProvider({ children }) {
   const [state, dispatch] = useReducer(changeState, {
+    user: null,
     color: "",
     selektPtoducts: [],
     totelPrice: 0,
     totelAmount: 0,
+    authReady: false,
   });
 
   // Dispatching action inside useEffect to avoid calling it on each render
@@ -88,6 +96,13 @@ export function GlobolContextProvider({ children }) {
   };
 
   //useEffect
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      dispatch({ type: "LOGIN", payload: user });
+      dispatch({ type: "AUTH_READY" });
+    });
+  }, []);
+
   useEffect(() => {
     calculate();
   }, [state.selektPtoducts]);

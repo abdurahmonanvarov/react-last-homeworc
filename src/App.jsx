@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import MainLoyOut from "./loyout/MainLoyOut";
 
 //pages
@@ -8,18 +12,26 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import SinglePage from "./pages/SinglePage";
 import Card from "./pages/Card";
-// import Register from "./pages/Register";
-// import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 //loader
 import { loader as HomLoader } from "./pages/Home";
 import { loader as SinglePageLoder } from "./pages/SinglePage";
+import ProtectedRood from "./components/ProtectedRood";
+import { useContext } from "react";
+import { GlobolContext } from "./context/GlobolContext";
 
 function App() {
+  const { user, authReady } = useContext(GlobolContext);
   const routers = createBrowserRouter([
     {
       path: "/",
-      element: <MainLoyOut />,
+      element: (
+        <ProtectedRood user={user}>
+          <MainLoyOut />
+        </ProtectedRood>
+      ),
       errorElement: <Error />,
       children: [
         {
@@ -46,8 +58,16 @@ function App() {
         },
       ],
     },
+    {
+      path: "/register",
+      element: user ? <Navigate to="/" /> : <Register />,
+    },
+    {
+      path: "/login",
+      element: user ? <Navigate to="/" /> : <Login />,
+    },
   ]);
-  return <RouterProvider router={routers} />;
+  return <>{authReady && <RouterProvider router={routers} />}</>;
 }
 
 export default App;

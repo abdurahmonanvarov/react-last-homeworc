@@ -3,9 +3,11 @@ import { useState } from "react";
 import { useContext } from "react";
 import { GlobolContext } from "../context/GlobolContext";
 import { formetPrice } from "../utils";
+import { useSiginOut } from "../hucs/useSignOut";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { signOutm } = useSiginOut();
 
   const { color, selektPtoducts, totelAmount, totelPrice } =
     useContext(GlobolContext);
@@ -117,7 +119,7 @@ function Navbar() {
               <a>Settings</a>
             </li>
             <li>
-              <a>Logout</a>
+              <span onClick={signOutm}>Logout</span>
             </li>
           </ul>
         </div>

@@ -1,7 +1,14 @@
-import React from "react";
+import { useSiginup } from "../hucs/useSignUp";
 
 function Register() {
-  return <div>Register</div>;
+  const { signUpWithGoogle } = useSiginup();
+  return (
+    <div className="h-screen grid place-items-center">
+      <button onClick={signUpWithGoogle} className="btn btn-primary ">
+        Google
+      </button>
+    </div>
+  );
 }
 
 export default Register;
